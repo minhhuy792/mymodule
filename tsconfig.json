@@ -741,7 +741,7 @@
     "tab": "administration",
     "description": "Description of my module.",
     "author": "Minh Huy",
-    "version": "2.0.1",
+    "version": "3.0.1",
     "prestashop_min_version": "1.7.6.0",
     "prestashop_max_version": null,
     "download_url": "https://raw.githubusercontent.com/minhhuy792/mymodule/main/mymodule.zip",
