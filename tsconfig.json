@@ -1,4 +1,4 @@
-{
+
 "mymodule": {
     "display_name": "My module",
     "tab": "administration",
@@ -11,5 +11,3 @@
     "icon": "https://raw.githubusercontent.com/minhhuy792/mymodule/main/logo.png"
     "hash": "9e546faa947b3af6e66f5d487f8dda58a92854c0"
   }
-
-}
