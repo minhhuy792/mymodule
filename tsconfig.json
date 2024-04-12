@@ -5,7 +5,7 @@
     "tab": "market_place",
     "description": "Download and upgrade MWG's native modules.",
     "author": "Minh Huy",
-    "version": "1.1.0",
+    "version": "2.1.0",
     "prestashop_min_version": "1.7.6.0",
     "prestashop_max_version": null,
     "download_url": "https://raw.githubusercontent.com/minhhuy792/mymodule/minhhuy1/ps_distributionapimwg.zip",
