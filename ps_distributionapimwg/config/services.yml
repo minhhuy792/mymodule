@@ -1,0 +1,60 @@
+parameters:
+  ps_cache_dir: !php/const _PS_CACHE_DIR_
+
+services:
+  distributionapimwg.cache.filesystem.adapter:
+    class: Symfony\Component\Cache\Adapter\FilesystemAdapter
+    arguments:
+      - ''
+      - 86400
+      - '%ps_cache_dir%/distribution-api'
+
+  distributionapimwg.cache.provider:
+    class: Doctrine\Common\Cache\Psr6\DoctrineProvider
+    factory: [ Doctrine\Common\Cache\Psr6\DoctrineProvider, wrap ]
+    arguments:
+      - '@distributionapimwg.cache.filesystem.adapter'
+
+  distributionapimwg.circuit_breaker.cache:
+    class: PrestaShop\Module\DistributionApiMwg\Middleware\Cache
+    arguments:
+      - '@distributionapimwg.cache.provider'
+
+  distributionapimwg.circuit_breaker.handlerstack:
+    class: GuzzleHttp\HandlerStack
+    factory: [ 'GuzzleHttp\HandlerStack', 'create' ]
+    calls:
+      - push: [ '@distributionapimwg.circuit_breaker.cache' ]
+
+  distributionapimwg.circuit_breaker.factory:
+    class: PrestaShop\CircuitBreaker\AdvancedCircuitBreakerFactory
+
+  distributionapimwg.circuit_breaker.settings:
+    class: PrestaShop\CircuitBreaker\FactorySettings
+    arguments:
+      - 2
+      - 3
+      - 86400
+    calls:
+      - setStorage: [ '@prestashop.core.circuit_breaker.storage' ]
+      - setClientOptions:
+          - { handler: '@distributionapimwg.circuit_breaker.handlerstack'}
+
+  distributionapimwg.circuit_breaker:
+    class: PrestaShop\CircuitBreaker\Contract\CircuitBreakerInterface
+    factory: [ '@distributionapimwg.circuit_breaker.factory', 'create' ]
+    arguments: [ '@distributionapimwg.circuit_breaker.settings' ]
+
+  PrestaShop\Module\DistributionApiMwg\ShopDataProvider:
+    class: PrestaShop\Module\DistributionApiMwg\ShopDataProvider
+
+  distributionapimwg.distribution_api:
+    class: PrestaShop\Module\DistributionApiMwg\DistributionApi
+    arguments:
+      - '@distributionapimwg.circuit_breaker'
+      - '@prestashop.module.factory.sourcehandler'
+      - '@prestashop.adapter.data_provider.module'
+      - '@PrestaShop\Module\DistributionApiMwg\ShopDataProvider'
+      - "@=service('prestashop.core.foundation.version').getSemVersion()"
+      - '%ps_cache_dir%/downloads'
+    public: true
