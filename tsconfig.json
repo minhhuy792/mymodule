@@ -1,6 +1,6 @@
 {
 
-  "ps_distributionapimwg": {
+  "mwg_distributionapi": {
     "display_name": "MWG Distribution API",
     "tab": "market_place",
     "description": "Download and upgrade MWG's native modules.",
